@@ -40,4 +40,3 @@ class Enemy(pygame.sprite.Sprite):
             self.rect.y = random.randint(0, settings.SCREEN_HEIGHT)
 
 
-small_enemies = pygame.sprite.Group()

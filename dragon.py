@@ -1,4 +1,5 @@
 import pygame
+import random
 import time
 import settings
 
@@ -17,7 +18,7 @@ class Dragon(pygame.sprite.Sprite):
         self.moving_down = True
 
     def draw(self, screen):
-        screen.blit(self.right_image, (self.rect.x, self.rect.y))
+        screen.blit(self.image, (self.rect.x, self.rect.y))
 
     def update(self):
 
@@ -28,6 +29,7 @@ class Dragon(pygame.sprite.Sprite):
         elif self.moving_right:
             self.rect.x += 4
             self.image = self.right_image
+            print("moving right")
         if self.moving_up:
             self.rect.y -= 4
         elif self.moving_down:

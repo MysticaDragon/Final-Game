@@ -1,8 +1,10 @@
 import pygame
 import time
-import random
 import settings
+import random
 import dragon
+from enemy import *
+from stardust import *
 pygame.init()
 
 screen = pygame.display.set_mode((settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT))
@@ -37,11 +39,21 @@ clouds = [c1,c2,c3,c4,c5,c6,c7,c8]
 cloud = random.randint(0,7)
 def draw_backround():
     background.blit(clouds[cloud],(0,0),)
+#draw Characters
 my_dragon = dragon.Dragon()
+
+for i in range(random.randint(5,8)):
+    stardusts.add(Stardust(random.randint(0,settings.SCREEN_WIDTH),random.randint(0,settings.SCREEN_HEIGHT - 2*settings.TILE_SIZE)))
+
+for i in range(random.randint(2,4)):
+    small_enemies.add(Enemy((random.randint(settings.SCREEN_WIDTH- settings.TILE_SIZE, settings.SCREEN_WIDTH + 2*settings.TILE_SIZE)),
+                            random.randint(0,settings.SCREEN_HEIGHT- settings.TILE_SIZE),random.randint(2,5)))
 
 draw_backround()
 
-while my_dragon.rect.y != (settings.SCREEN_HEIGHT - settings.TILE_SIZE):
+killed = pygame.sprite.spritecollide(my_dragon,small_enemies, False)
+
+while my_dragon.rect.y != (settings.SCREEN_HEIGHT - settings.TILE_SIZE) and len(killed) == 0:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             print('Game ended')
@@ -51,19 +63,29 @@ while my_dragon.rect.y != (settings.SCREEN_HEIGHT - settings.TILE_SIZE):
                 my_dragon.moving_left = True
             if event.key == pygame.K_RIGHT:
                 my_dragon.moving_right = True
-            if event.key == pygame.K_UP:
+            if event.key == pygame.K_SPACE:
                 my_dragon.moving_up = True
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT:
                 my_dragon.moving_left = False
             if event.key == pygame.K_RIGHT:
                 my_dragon.moving_right = False
-            if event.key == pygame.K_UP:
+            if event.key == pygame.K_SPACE:
                 my_dragon.moving_up = False
 
     my_dragon.update()
+    small_enemies.update()
+    stardusts.update()
 
+    killed = pygame.sprite.spritecollide(my_dragon,small_enemies, False)
+
+    stardust_collected = pygame.sprite.spritecollide(my_dragon, stardusts, True)
+    if len(stardusts) == 0:
+        for i in range(random.randint(5, 10)):
+            stardusts.add(Stardust((random.randint(settings.SCREEN_WIDTH + settings.TILE_SIZE,settings.SCREEN_WIDTH + 20*settings.TILE_SIZE)), random.randint(0, settings.SCREEN_HEIGHT - 2*settings.TILE_SIZE)))
     screen.blit(background, (0, 0))
+    small_enemies.draw(screen)
+    stardusts.draw(screen)
     my_dragon.draw(screen)
     pygame.display.flip()
     clock.tick(60)
