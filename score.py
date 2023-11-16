@@ -11,9 +11,8 @@ class Score(pygame.sprite.Sprite):
         # counters
         self.score = score
         self.highscore = self.load_high_score()
-
-        # score text
         self.score_font = pygame.font.Font('assets/fonts/score.ttf', 30)
+        self.highscore_msg = self.score_font.render(str(self.highscore), True, (176, 209, 224))
         self.score_msg = self.score_font.render(str(self.score), True, (176, 209, 224))
 
         # score box
@@ -45,7 +44,8 @@ class Score(pygame.sprite.Sprite):
 
     def update_score_text(self):
         self.score_msg = self.score_font.render(str(self.score), True, (176, 209, 224))
-
+    def update_highscore_text(self):
+        self.highscore_msg = self.score_font.render(str(self.highscore), True, (176, 209, 224))
     def update(self):
         # font
         self.score += 1

@@ -19,7 +19,9 @@ class Dragon(pygame.sprite.Sprite):
 
     def draw(self, screen):
         screen.blit(self.image, (self.rect.x, self.rect.y))
-
+    def reset_position(self):
+        self.x = 200
+        self.y = 200
     def update(self):
 
         if self.moving_left:
