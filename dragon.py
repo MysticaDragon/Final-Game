@@ -23,17 +23,16 @@ class Dragon(pygame.sprite.Sprite):
     def update(self):
 
         if self.moving_left:
-            self.rect.x -= 4
+            self.rect.x -= 2
             self.image = self.left_image
 
         elif self.moving_right:
-            self.rect.x += 4
+            self.rect.x += 2
             self.image = self.right_image
-            print("moving right")
         if self.moving_up:
-            self.rect.y -= 4
+            self.rect.y -= 2
         elif self.moving_down:
-            self.rect.y += 2
+            self.rect.y += 4
 
         if self.rect.x < 0:
             self.rect.x = 0

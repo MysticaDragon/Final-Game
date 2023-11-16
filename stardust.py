@@ -8,7 +8,7 @@ class Stardust(pygame.sprite.Sprite):
     def __init__(self, x=200, y=200):
         super().__init__()
         self.image = pygame.image.load('assets/images/coin.png').convert()
-        self.image.set_colorkey((255, 255, 255))
+        self.image.set_colorkey((0, 0, 0))
         self.rect = pygame.rect.Rect(x,y,self.image.get_width(), self.image.get_height())
         self.moving_left = True
         self.moving_right = False
