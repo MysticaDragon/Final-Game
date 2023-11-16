@@ -1,0 +1,3 @@
+TILE_SIZE = 64  # tiles are square h == w
+SCREEN_WIDTH = 14 * TILE_SIZE
+SCREEN_HEIGHT = 8 * TILE_SIZE
