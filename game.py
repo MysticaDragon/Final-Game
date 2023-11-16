@@ -3,8 +3,10 @@ import time
 import settings
 import random
 import dragon
+from score import *
 from enemy import *
 from stardust import *
+
 pygame.init()
 
 screen = pygame.display.set_mode((settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT))
@@ -35,24 +37,40 @@ c7 = pygame.image.load('assets/images/clouds_7.png').convert()
 c7.set_colorkey((0, 0, 0))
 c8 = pygame.image.load('assets/images/clouds_8.png').convert()
 c8.set_colorkey((0, 0, 0))
-clouds = [c1,c2,c3,c4,c5,c6,c7,c8]
-cloud = random.randint(0,7)
+clouds = [c1, c2, c3, c4, c5, c6, c7, c8]
+cloud = random.randint(0, 7)
+
+my_score = Score()
+
+
 def draw_backround():
-    background.blit(clouds[cloud],(0,0),)
-#draw Characters
+    background.blit(clouds[cloud], (0, 0), )
+
+
+pygame.display.set_caption('Children of the Stars')
+
+
+def draw_score():
+    background.blit(my_score.image, (my_score.x, my_score.y))
+    background.blit(my_score.score_msg,
+                    (settings.SCREEN_WIDTH - 1.75 * settings.TILE_SIZE, settings.TILE_SIZE / 3))
+
+
+# draw main character
 my_dragon = dragon.Dragon()
-
-for i in range(random.randint(5,8)):
-    stardusts.add(Stardust(random.randint(0,settings.SCREEN_WIDTH),random.randint(0,settings.SCREEN_HEIGHT - 2*settings.TILE_SIZE)))
-
-for i in range(random.randint(2,4)):
-    small_enemies.add(Enemy((random.randint(settings.SCREEN_WIDTH- settings.TILE_SIZE, settings.SCREEN_WIDTH + 2*settings.TILE_SIZE)),
-                            random.randint(0,settings.SCREEN_HEIGHT- settings.TILE_SIZE),random.randint(2,5)))
+#generating initial stardust
+for i in range(random.randint(5, 8)):
+    stardusts.add(Stardust(random.randint(0, settings.SCREEN_WIDTH),
+                           random.randint(0, settings.SCREEN_HEIGHT - 2 * settings.TILE_SIZE)))
+# made small enemies
+for i in range(random.randint(2, 4)):
+    small_enemies.add(Enemy(
+        (random.randint(settings.SCREEN_WIDTH - settings.TILE_SIZE, settings.SCREEN_WIDTH + 2 * settings.TILE_SIZE)),
+        random.randint(0, settings.SCREEN_HEIGHT - settings.TILE_SIZE), random.randint(2, 5)))
 
 draw_backround()
+killed = pygame.sprite.spritecollide(my_dragon, small_enemies, False)
 
-killed = pygame.sprite.spritecollide(my_dragon,small_enemies, False)
-score = 0
 while my_dragon.rect.y != (settings.SCREEN_HEIGHT - settings.TILE_SIZE) and len(killed) == 0:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -74,18 +92,26 @@ while my_dragon.rect.y != (settings.SCREEN_HEIGHT - settings.TILE_SIZE) and len(
                 my_dragon.moving_up = False
 
     my_dragon.update()
-    small_enemies.update( )
+    small_enemies.update()
     stardusts.update()
 
-    killed = pygame.sprite.spritecollide(my_dragon,small_enemies, False)
+    killed = pygame.sprite.spritecollide(my_dragon, small_enemies, False)
     stardust_collected = pygame.sprite.spritecollide(my_dragon, stardusts, True)
+    count = 0
+    if len(stardust_collected) > count:
+        count += 1
+        my_score.update()
+        my_score.update_score_text()
+
+    draw_score()
     if len(stardusts) == 0:
         for i in range(random.randint(5, 10)):
-            stardusts.add(Stardust((random.randint(settings.SCREEN_WIDTH + settings.TILE_SIZE,settings.SCREEN_WIDTH + 20*settings.TILE_SIZE)), random.randint(0, settings.SCREEN_HEIGHT - 2*settings.TILE_SIZE)))
-    score += len(stardust_collected)
-    print(score)
+            stardusts.add(Stardust((random.randint(settings.SCREEN_WIDTH + settings.TILE_SIZE,
+                                                   settings.SCREEN_WIDTH + 20 * settings.TILE_SIZE)),
+                                   random.randint(0, settings.SCREEN_HEIGHT - 2 * settings.TILE_SIZE)))
 
     screen.blit(background, (0, 0))
+    # my_score.draw(screen)
     small_enemies.draw(screen)
     stardusts.draw(screen)
     my_dragon.draw(screen)
