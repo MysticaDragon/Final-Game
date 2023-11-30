@@ -13,14 +13,14 @@ pygame.display.set_caption('Children of the Stars')
 screen = pygame.display.set_mode((settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT))
 background = screen.copy()
 clock = pygame.time.Clock()
-#Backgrounds
-#start
+# Backgrounds
+# start
 start_screen = pygame.image.load('assets/images/start_screen.PNG').convert()
 start_screen.set_colorkey((0, 0, 0))
-#instructions
+# instructions
 instructions_bg = pygame.image.load('assets/images/instructions_1.PNG').convert()
 instructions_bg.set_colorkey((0, 0, 0))
-#end screen
+# end screen
 end_screen_bg = pygame.image.load('assets/images/end_screen.PNG').convert()
 end_screen_bg.set_colorkey((0, 0, 0))
 
@@ -47,42 +47,51 @@ c8.set_colorkey((0, 0, 0))
 clouds = [c1, c2, c3, c4, c5, c6, c7, c8]
 cloud = random.randint(0, 7)
 
-#score counter
+# score counter
 my_score = Score()
+
 
 def draw_start_background():
     background.blit(start_screen, (0, 0), )
+
+
 def draw_instructions_background():
     background.blit(instructions_bg, (0, 0), )
+
+
 def draw_end_background():
-    background.blit(end_screen_bg, (0,0))
+    background.blit(end_screen_bg, (0, 0))
+
+
 def draw_cloud_background():
     background.blit(clouds[cloud], (0, 0), )
+
 
 def draw_score():
     background.blit(my_score.image, (my_score.x, my_score.y))
     background.blit(my_score.score_msg,
                     (settings.SCREEN_WIDTH - 1.95 * settings.TILE_SIZE, settings.TILE_SIZE / 3))
 
+def init_characters():
+    global my_dragon
+    # draw main character
+    my_dragon = dragon.Dragon()
+    # generating initial stardust
+    for i in range(random.randint(5, 8)):
+        stardusts.add(Stardust(random.randint(0, settings.SCREEN_WIDTH),
+                               random.randint(0, settings.SCREEN_HEIGHT - 2 * settings.TILE_SIZE)))
+    # made small enemies
+    for i in range(random.randint(2, 4)):
+        small_enemies.add(Enemy(
+            (random.randint(settings.SCREEN_WIDTH - settings.TILE_SIZE, settings.SCREEN_WIDTH + 2 * settings.TILE_SIZE)),
+            random.randint(0, settings.SCREEN_HEIGHT - settings.TILE_SIZE), random.randint(2, 5)))
 
-# draw main character
-my_dragon = dragon.Dragon()
-#generating initial stardust
-for i in range(random.randint(5, 8)):
-    stardusts.add(Stardust(random.randint(0, settings.SCREEN_WIDTH),
-                           random.randint(0, settings.SCREEN_HEIGHT - 2 * settings.TILE_SIZE)))
-# made small enemies
-for i in range(random.randint(2, 4)):
-    small_enemies.add(Enemy(
-        (random.randint(settings.SCREEN_WIDTH - settings.TILE_SIZE, settings.SCREEN_WIDTH + 2 * settings.TILE_SIZE)),
-        random.randint(0, settings.SCREEN_HEIGHT - settings.TILE_SIZE), random.randint(2, 5)))
 
 def instructions():
     while True:
         draw_instructions_background()
-        #tracking mouse
+        # tracking mouse
         mouse_pos = pygame.mouse.get_pos()
-        print(mouse_pos)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 print('Game ended')
@@ -96,6 +105,7 @@ def instructions():
 
 
 def play():
+    init_characters()
     draw_cloud_background()
     killed = pygame.sprite.spritecollide(my_dragon, small_enemies, False)
     while my_dragon.rect.y != (settings.SCREEN_HEIGHT - settings.TILE_SIZE) and len(killed) == 0:
@@ -145,25 +155,15 @@ def play():
         pygame.display.flip()
         clock.tick(60)
     return 'end'
-def play_reset():
-    #resets play elements to init
-    my_score.score = 0
-    my_score.update_score_text()
 
-    small_enemies.remove()
-    stardusts.remove()
 
-    # init main character position
-    global my_dragon  # Declare my_dragon as a global variable
-    my_dragon = dragon.Dragon() # Reinitialize my_dragon
 
 
 def start():
-
     while True:
-        #start screen
+        # start screen
         draw_start_background()
-        #tracking mouse
+        # tracking mouse
         mouse_pos = pygame.mouse.get_pos()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -177,13 +177,13 @@ def start():
         pygame.display.flip()
         clock.tick(60)
 
+
 def end_screen():
     while True:
-        #start screen
+        # start screen
         draw_end_background()
-        #tracking mouse
+        # tracking mouse
         mouse_pos = pygame.mouse.get_pos()
-        print(mouse_pos)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 print('Game ended')
@@ -191,7 +191,7 @@ def end_screen():
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if 216 < mouse_pos[0] <= 675 and 298 < mouse_pos[1] <= 369:
                     play_reset()
-                    play()
+                    start()
 
         background.blit(my_score.score_msg,
                         (405, 165))
@@ -200,6 +200,7 @@ def end_screen():
         screen.blit(background, (0, 0))
         pygame.display.flip()
         clock.tick(60)
+
 
 while True:
     state = start()

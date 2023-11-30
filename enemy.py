@@ -7,8 +7,8 @@ import settings
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, x=800, y=100, speed = 2):
         super().__init__()
-        self.right_image = pygame.image.load('assets/images/purple_fish.png').convert()
-        self.right_image.set_colorkey((0, 0, 0))
+        self.right_image = pygame.image.load('assets/images/small_enemy_1.png').convert()
+        self.right_image.set_colorkey((0, 0, 255))
         self.left_image = pygame.transform.flip(self.right_image, True, False)
         self.image = self.right_image
         self.speed = speed

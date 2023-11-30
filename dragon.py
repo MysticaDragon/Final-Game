@@ -7,7 +7,7 @@ import settings
 class Dragon(pygame.sprite.Sprite):
     def __init__(self, x=200, y=200):
         super().__init__()
-        self.right_image = pygame.image.load('assets/images/pink_fish_rest.png').convert()
+        self.right_image = pygame.image.load('assets/images/hero_1.png').convert()
         self.right_image.set_colorkey((0, 0, 0))
         self.left_image = pygame.transform.flip(self.right_image, True, False)
         self.image = self.right_image
