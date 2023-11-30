@@ -54,4 +54,3 @@ class Score(pygame.sprite.Sprite):
     def reset(self):
         self.score = 0
         self.score_msg = self.score_font.render(str(self.score), True, (176, 209, 224))
-        

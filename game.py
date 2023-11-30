@@ -6,6 +6,7 @@ import dragon
 from score import *
 from enemy import *
 from stardust import *
+from enemy_2 import *
 
 pygame.init()
 
@@ -53,21 +54,13 @@ my_score = Score()
 
 def draw_start_background():
     background.blit(start_screen, (0, 0), )
-
-
 def draw_instructions_background():
     background.blit(instructions_bg, (0, 0), )
-
-
 def draw_end_background():
     background.blit(end_screen_bg, (0, 0))
-
-
 def draw_cloud_background():
     cloud = random.randint(0, 7)
     background.blit(clouds[cloud], (0, 0), )
-
-
 def draw_score():
     background.blit(my_score.image, (my_score.x, my_score.y))
     background.blit(my_score.score_msg,
@@ -85,8 +78,7 @@ def init_characters():
     for i in range(random.randint(2, 4)):
         small_enemies.add(Enemy(
             (random.randint(settings.SCREEN_WIDTH - settings.TILE_SIZE, settings.SCREEN_WIDTH + 2 * settings.TILE_SIZE)),
-            random.randint(0, settings.SCREEN_HEIGHT - settings.TILE_SIZE), random.randint(2, 5)))
-
+            random.randint(0, settings.SCREEN_HEIGHT - settings.TILE_SIZE), random.randint(1, 3)))
 
 def instructions():
     while True:
@@ -104,11 +96,11 @@ def instructions():
         pygame.display.flip()
         clock.tick(60)
 
-
 def play():
     reset_game()
     init_characters()
     draw_cloud_background()
+    large_enemies
     killed = pygame.sprite.spritecollide(my_dragon, small_enemies, False)
     while my_dragon.rect.y != (settings.SCREEN_HEIGHT - settings.TILE_SIZE) and len(killed) == 0:
         for event in pygame.event.get():
@@ -132,6 +124,7 @@ def play():
 
         my_dragon.update()
         small_enemies.update()
+        large_enemies.update()
         stardusts.update()
         killed = pygame.sprite.spritecollide(my_dragon, small_enemies, False)
         stardust_collected = pygame.sprite.spritecollide(my_dragon, stardusts, True)
@@ -147,11 +140,19 @@ def play():
                 stardusts.add(Stardust((random.randint(settings.SCREEN_WIDTH + settings.TILE_SIZE,
                                                        settings.SCREEN_WIDTH + 20 * settings.TILE_SIZE)),
                                        random.randint(0, settings.SCREEN_HEIGHT - 2 * settings.TILE_SIZE)))
+        # add Big enemies based on score
+        if count == 3:
+            for i in range(random.randint(2, 4)):
+                print('bringing in the big boys')
+                large_enemies.add(BigEnemy((random.randint(settings.SCREEN_WIDTH,settings.SCREEN_WIDTH + 4 * settings.TILE_SIZE)),
+                                           random.randint(0, settings.SCREEN_HEIGHT - settings.TILE_SIZE), random.randint(3, 5)))
+
         my_score.update_high_score()
         my_score.update_highscore_text()
         screen.blit(background, (0, 0))
         # my_score.draw(screen)
         small_enemies.draw(screen)
+        large_enemies.draw(screen)
         stardusts.draw(screen)
         my_dragon.draw(screen)
         pygame.display.flip()
@@ -208,9 +209,6 @@ def end_screen():
         pygame.display.flip()
         clock.tick(60)
 
-
-
-
 while True:
     state = start()
     if state == 'quit':
@@ -218,7 +216,5 @@ while True:
     elif state == 'intro':
         instructions()
         play()
-        end_screen()
-        state = end_screen()
 
 
