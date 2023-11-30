@@ -24,5 +24,6 @@ class Stardust(pygame.sprite.Sprite):
         if self.rect.right <= 0:
             self.rect.x = settings.SCREEN_WIDTH + 2*settings.TILE_SIZE
             self.rect.y = (random.randint(0, settings.SCREEN_HEIGHT - 2*settings.TILE_SIZE))
-
+    def reset(self):
+        self.kill()
 stardusts = pygame.sprite.Group()

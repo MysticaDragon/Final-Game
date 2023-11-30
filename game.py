@@ -64,6 +64,7 @@ def draw_end_background():
 
 
 def draw_cloud_background():
+    cloud = random.randint(0, 7)
     background.blit(clouds[cloud], (0, 0), )
 
 
@@ -78,8 +79,8 @@ def init_characters():
     my_dragon = dragon.Dragon()
     # generating initial stardust
     for i in range(random.randint(5, 8)):
-        stardusts.add(Stardust(random.randint(0, settings.SCREEN_WIDTH),
-                               random.randint(0, settings.SCREEN_HEIGHT - 2 * settings.TILE_SIZE)))
+        stardusts.add(Stardust(random.randint(settings.SCREEN_WIDTH - 7*settings.TILE_SIZE, settings.SCREEN_WIDTH + 4*settings.TILE_SIZE),
+                                 random.randint(0, settings.SCREEN_HEIGHT - 2 * settings.TILE_SIZE)))
     # made small enemies
     for i in range(random.randint(2, 4)):
         small_enemies.add(Enemy(
@@ -105,6 +106,7 @@ def instructions():
 
 
 def play():
+    reset_game()
     init_characters()
     draw_cloud_background()
     killed = pygame.sprite.spritecollide(my_dragon, small_enemies, False)
@@ -154,10 +156,15 @@ def play():
         my_dragon.draw(screen)
         pygame.display.flip()
         clock.tick(60)
+
     return 'end'
 
-
-
+def reset_game():
+    for enemy in small_enemies:
+        enemy.kill()
+    for stardust in stardusts:
+        stardust.kill()
+    my_score.reset()
 
 def start():
     while True:
@@ -190,8 +197,8 @@ def end_screen():
                 pygame.quit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if 216 < mouse_pos[0] <= 675 and 298 < mouse_pos[1] <= 369:
-                    play_reset()
-                    start()
+                    play()
+
 
         background.blit(my_score.score_msg,
                         (405, 165))
@@ -200,6 +207,8 @@ def end_screen():
         screen.blit(background, (0, 0))
         pygame.display.flip()
         clock.tick(60)
+
+
 
 
 while True:
@@ -211,3 +220,5 @@ while True:
         play()
         end_screen()
         state = end_screen()
+
+

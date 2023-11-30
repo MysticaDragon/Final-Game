@@ -51,3 +51,6 @@ class Score(pygame.sprite.Sprite):
         self.score += 1
         self.image = self.image
         print(self.score)
+    def reset(self):
+        self.score = 0
+        self.score_msg = self.score_font.render(str(self.score), True, (176, 209, 224))
