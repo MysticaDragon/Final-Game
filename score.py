@@ -41,7 +41,8 @@ class Score(pygame.sprite.Sprite):
             with open(file_path, 'w') as json_file:
                 json.dump(self.highscore, json_file)
             print(f'the highscore is now {self.highscore}')
-
+    def print_score(self):
+        return int(self.score)
     def update_score_text(self):
         self.score_msg = self.score_font.render(str(self.score), True, (176, 209, 224))
     def update_highscore_text(self):

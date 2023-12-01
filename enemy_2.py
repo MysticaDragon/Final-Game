@@ -20,9 +20,9 @@ class BigEnemy(pygame.sprite.Sprite):
         self.rect = pygame.rect.Rect(x, y, self.image.get_width(), self.image.get_height())
 
         self.speed = speed
-        self.moving_left = True
+        self.moving_left = False
         self.moving_right = False
-        self.moving_up = True
+        self.moving_up = False
         self.moving_down = False
 
         self.animation_delay = 400  # Delay between animation frames in milliseconds
@@ -65,6 +65,8 @@ class BigEnemy(pygame.sprite.Sprite):
 
     def reset(self):
         self.kill()
-
+    def start(self):
+        self.moving_left = True
+        self.moving_up = True
 
 large_enemies = pygame.sprite.Group()

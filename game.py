@@ -121,7 +121,8 @@ def play():
     init_characters()
     draw_cloud_background()
     killed = pygame.sprite.spritecollide(my_dragon, small_enemies, False)
-    while my_dragon.rect.y != (settings.SCREEN_HEIGHT - settings.TILE_SIZE) and len(killed) == 0:
+    killed2 = pygame.sprite.spritecollide(my_dragon, large_enemies, False)
+    while my_dragon.rect.y != (settings.SCREEN_HEIGHT - settings.TILE_SIZE) and len(killed) == 0 and len(killed2) == 0:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 print('Game ended')
@@ -146,6 +147,7 @@ def play():
         small_enemies.update()
         stardusts.update()
         killed = pygame.sprite.spritecollide(my_dragon, small_enemies, False)
+        killed2 = pygame.sprite.spritecollide(my_dragon, large_enemies, False)
         stardust_collected = pygame.sprite.spritecollide(my_dragon, stardusts, True)
         count = 0
         if len(stardust_collected) > count:
@@ -158,7 +160,10 @@ def play():
                 stardusts.add(Stardust((random.randint(settings.SCREEN_WIDTH + settings.TILE_SIZE,
                                                        settings.SCREEN_WIDTH + 20 * settings.TILE_SIZE)),
                                        random.randint(0, settings.SCREEN_HEIGHT - 2 * settings.TILE_SIZE)))
-
+        if 10 <= my_score.print_score() < 11:
+            print('big enemy')
+            for enemy in large_enemies:
+                enemy.start()
         my_score.update_high_score()
         my_score.update_highscore_text()
         screen.blit(background, (0, 0))
