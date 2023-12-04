@@ -27,3 +27,6 @@ Special Thanks:
 Will Gutermuth,
 Aaron Goff
 
+
+Assisted Classmates:
+Andrew Galvan-Arrien, Arya Singh, Bianca Coleman
