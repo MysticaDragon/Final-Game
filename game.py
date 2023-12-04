@@ -9,11 +9,27 @@ from stardust import *
 from enemy_2 import *
 
 pygame.init()
-
+pygame.mixer.init()
 pygame.display.set_caption('Children of the Stars')
 screen = pygame.display.set_mode((settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT))
 background = screen.copy()
 clock = pygame.time.Clock()
+
+#Sounds
+start_background_music = pygame.mixer.Sound('assets/sounds/start_screen_music.wav')
+game_background_music = pygame.mixer.Sound('assets/sounds/play_screen_music.wav')
+middle_backround_music = pygame.mixer.Sound('assets/sounds/waiting_music.wav')
+button_sound = pygame.mixer.Sound('assets/sounds/bu.mp3')
+death_sound = pygame.mixer.Sound('assets/sounds/death_sound.wav')
+stardust_collection_sound = pygame.mixer.Sound('assets/sounds/stardust_sound.wav')
+#channels
+pygame.mixer.set_num_channels(5)  # Adjust the number based on your needs
+bg_music_channel = pygame.mixer.Channel(0)
+button_channel = pygame.mixer.Channel(1)
+stardust_channel = pygame.mixer.Channel(2)
+wait_channel = pygame.mixer.Channel(3)
+death_channel = pygame.mixer.Channel(4)
+
 # Backgrounds
 # start
 start_screen = pygame.image.load('assets/images/start_screen.PNG').convert()
@@ -74,7 +90,43 @@ def draw_score():
     background.blit(my_score.score_msg,
                     (settings.SCREEN_WIDTH - 1.95 * settings.TILE_SIZE, settings.TILE_SIZE / 3))
 
+def play_intro_music():
+    start_background_music.set_volume(0.6)
+    bg_music_channel.play(start_background_music, loops=-1)
 
+def play_wait_music():
+    middle_backround_music.set_volume(0.6)
+    wait_channel.play(middle_backround_music, loops=-1)
+def play_button():
+    button_sound.set_volume(1)
+    button_channel.play(button_sound)
+    pygame.display.flip()
+    pygame.time.delay(400)
+
+def play_stardust():
+    stardust_collection_sound.set_volume(1)
+    stardust_channel.play(stardust_collection_sound)
+    pygame.display.flip()
+
+def play_death():
+    death_sound.set_volume(1)
+    death_channel.play(death_sound)
+    pygame.display.flip()
+    pygame.time.delay(400)
+
+def play_game_music():
+    game_background_music.set_volume(0.4)
+    bg_music_channel.play(game_background_music, loops=-1)
+
+def stop_intro_music():
+    pygame.mixer.Sound.stop(start_background_music)
+
+def stop_game_music():
+    pygame.mixer.Sound.stop(game_background_music)
+
+def stop_wait_music():
+    pygame.mixer.Sound.stop(middle_backround_music)
+    pygame.mixer.Channel(3).stop()
 def init_characters():
     global my_dragon
     # draw main character
@@ -99,6 +151,7 @@ def init_characters():
 
 
 def instructions():
+    play_wait_music()
     while True:
         draw_instructions_background()
         # tracking mouse
@@ -109,15 +162,18 @@ def instructions():
                 pygame.quit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if 351 < mouse_pos[0] <= 480 and 413 < mouse_pos[1] <= 481:
+                    play_button()
                     return 'play'
         screen.blit(background, (0, 0))
         pygame.display.flip()
         clock.tick(60)
+    stop_wait_music()
     return 'play'
 
 
 def play():
     reset_game()
+    play_game_music()
     init_characters()
     draw_cloud_background()
     killed = pygame.sprite.spritecollide(my_dragon, small_enemies, False)
@@ -154,6 +210,7 @@ def play():
             count += 1
             my_score.update()
             my_score.update_score_text()
+            play_stardust()
         draw_score()
         if len(stardusts) == 0:
             for i in range(random.randint(5, 10)):
@@ -174,7 +231,8 @@ def play():
         my_dragon.draw(screen)
         pygame.display.flip()
         clock.tick(60)
-
+    play_death()
+    stop_game_music()
     return 'end'
 
 
@@ -189,6 +247,7 @@ def reset_game():
 
 
 def start():
+    play_intro_music()
     while True:
         # start screen
         draw_start_background()
@@ -200,7 +259,9 @@ def start():
                 pygame.quit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if 633 < mouse_pos[0] <= 814 and 383 < mouse_pos[1] <= 441:
+                    play_button()
                     print('you can start')
+                    stop_intro_music()
                     return 'intro'
         screen.blit(background, (0, 0))
         pygame.display.flip()
@@ -208,6 +269,7 @@ def start():
 
 
 def end_screen():
+    play_wait_music()
     while True:
         # start screen
         draw_end_background()
@@ -219,6 +281,8 @@ def end_screen():
                 pygame.quit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if 216 < mouse_pos[0] <= 675 and 298 < mouse_pos[1] <= 369:
+                    play_button()
+                    stop_wait_music()
                     play()
 
         background.blit(my_score.score_msg,
